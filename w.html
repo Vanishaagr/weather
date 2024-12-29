@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      background-image: url("/Users/vanishaagarwal/Downloads/pexels-ithalu-907485.jpg"); 
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      transition: background-image 1ms ease-in-out;
+    }
+
+    .container {
+      margin-top: 100px;
+    }
+
+    h1 {
+      color: rgb(9, 15, 103);
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    #city-input {
+      padding: 10px;
+      font-size: 1em;
+      width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3498db;
+    }
+
+    .weather-result {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <div class="form-group">
+      <input type="text" id="city-input" placeholder="Enter city name">
+      <button onclick="getWeather()">Get Weather</button>
+    </div>
+    <div id="weather-result" class="weather-result"></div>
+  </div>
+  <script>
+    const weatherimage={
+      Thunderstorm:"/Users/vanishaagarwal/Downloads/pexels-andre-furtado-43594-1162251.jpg",
+      Drizzle:"/Users/vanishaagarwal/Downloads/pexels-lum3n-44775-1410224.jpg",
+      Rain:"/Users/vanishaagarwal/Downloads/pexels-pixabay-459451.jpg",
+      Snow:"/Users/vanishaagarwal/Downloads/pexels-eberhardgross-1417647.jpg",
+      Clear:"/Users/vanishaagarwal/Downloads/pexels-pixabay-531756.jpg",
+      Atmosphere:"/Users/vanishaagarwal/Downloads/pexels-ithalu-907485.jpg",
+      Clouds:"/Users/vanishaagarwal/Downloads/pexels-pixabay-209831.jpg",
+      Haze:"/Users/vanishaagarwal/Downloads/motion-fog-photography-eberhard-grossgasteiger.jpeg",
+      Mist:"/Users/vanishaagarwal/Downloads/pexels-lum3n-44775-1410224.jpg"
+    };
+
+    async function getWeather() {
+      const city = document.getElementById('city-input').value;
+      if (!city) {
+        alert('Please enter a city name');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/weather?city=${city}`);
+        if (!response.ok) {
+          throw new Error('Weather data could not be fetched');
+        }
+        const data = await response.json();
+        displayWeather(data);
+        updateBackground(data.Weather);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching weather data');
+      }
+    }
+
+    function displayWeather(data) {
+      const weatherResult = document.getElementById('weather-result');
+      weatherResult.innerHTML = `
+        <p>City: ${data.city}</p>
+        <p>Temperature: ${data.temperature}°C</p>
+        <p>Weather: ${data.Weather}</p>
+      `;
+    }
+
+    function updateBackground(weatherCondition) {
+      const body = document.body;
+      const imageUrl =weatherimage[weatherCondition] || "/Users/vanishaagarwal/Downloads/pexels-ithalu-907485.jpg"; 
+      document.body.style.backgroundImage = `url(${imageUrl})`;
+    }
+  </script>
+</body>
+</html>
